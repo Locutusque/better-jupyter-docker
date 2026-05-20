@@ -16,10 +16,14 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # ----------------------------
-# 2. Install CUDA repo (Ubuntu 24.04 compatible method)
+# 2. Install CUDA repo (auto-detect Ubuntu version)
 # ----------------------------
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb && \
-    dpkg -i cuda-keyring_1.1-1_all.deb && \
+RUN set -eux; \
+    . /etc/os-release; \
+    UBUNTU_VERSION=$(echo "$VERSION_ID" | tr -d '.'); \
+    echo "Detected Ubuntu version: $VERSION_ID -> $UBUNTU_VERSION"; \
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu${UBUNTU_VERSION}/x86_64/cuda-keyring_1.1-1_all.deb; \
+    dpkg -i cuda-keyring_1.1-1_all.deb; \
     apt-get update
 
 # ----------------------------
