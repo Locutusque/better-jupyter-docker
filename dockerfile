@@ -48,21 +48,15 @@ RUN echo 'export CUDA_HOME=/usr/local/cuda' > /etc/profile.d/cuda.sh && \
 # ----------------------------
 # 5. Create startup script to restart JupyterLab after CUDA env is exported
 # ----------------------------
-RUN mkdir -p /usr/local/bin && cat > /usr/local/bin/start-with-cuda.sh << 'EOF'
+#
+COPY <<EOF /usr/local/bin/start-with-cuda.sh
 #!/bin/bash
 set -e
 
 # Source CUDA environment
 export CUDA_HOME=/usr/local/cuda
-export PATH=/usr/local/cuda/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-
-# If a JupyterLab server is already running, stop it
-if pgrep -f "jupyter-lab\|jupyter lab" > /dev/null 2>&1; then
-    echo "Stopping existing JupyterLab server..."
-    pkill -f "jupyter-lab\|jupyter lab" || true
-    sleep 2
-fi
+export PATH=/usr/local/cuda/bin:\$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:\$LD_LIBRARY_PATH
 
 # Re-launch JupyterLab with the CUDA env vars in scope
 echo "Starting JupyterLab with CUDA environment..."
