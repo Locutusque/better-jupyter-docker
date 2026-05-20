@@ -50,5 +50,4 @@ RUN echo 'export CUDA_HOME=/usr/local/cuda' > /etc/profile.d/cuda.sh && \
 # ----------------------------
 USER jovyan
 
-RUN nvcc --version && \
-    pip install flash-attn --no-build-isolation
+RUN nvcc --version
